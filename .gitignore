@@ -1,0 +1,15 @@
+node_modules/
+artifacts/
+cache/
+coverage/
+coverage.json
+typechain/
+typechain-types/
+
+# Secrets — never commit
+.env
+.env.local
+*.key
+
+# Machine-local Claude Code settings (per-machine permissions)
+.claude/settings.local.json

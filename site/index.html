@@ -1,0 +1,216 @@
+<style>
+  :root{
+    --void:#0B0E11; --panel:#14171C; --panel-2:#1B1F27; --line:#262B34;
+    --bone:#EAECEF; --ash:#8B9099; --ash-dim:#5A616B;
+    --gold:#F0B90B; --gold-hi:#F3BA2F; --gold-dim:#9a7a12;
+    --maxw:860px;
+    --mono:"SF Mono","JetBrains Mono","Consolas","Menlo","Liberation Mono",monospace;
+    --display:"Impact","Haettenschweiler","Arial Narrow Bold","Franklin Gothic Heavy",sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  .knife{
+    background:var(--void); color:var(--bone); font-family:var(--body); line-height:1.65;
+    min-height:100vh; margin:0;
+    background-image:
+      linear-gradient(rgba(240,185,11,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,185,11,0.025) 1px, transparent 1px);
+    background-size:44px 44px;
+  }
+  .knife .col{max-width:var(--maxw);margin:0 auto;padding:clamp(26px,5vw,56px) clamp(20px,5vw,40px) 64px;}
+
+  /* hero */
+  .hero{text-align:center;}
+  .mark{width:clamp(104px,26vw,156px);height:auto;display:block;margin:0 auto 8px;}
+  .wordmark{
+    font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:0.01em;
+    line-height:0.86;font-size:clamp(2.9rem,13vw,5.6rem);margin:6px 0 0;text-wrap:balance;
+  }
+  .wordmark .the{
+    font-family:var(--body);font-weight:600;text-transform:lowercase;font-size:0.24em;
+    letter-spacing:0.06em;color:var(--ash);vertical-align:0.42em;margin:0 0.16em;
+  }
+  .ticker{font-family:var(--mono);font-size:0.8rem;letter-spacing:0.34em;color:var(--gold);margin:14px 0 0;text-transform:uppercase;}
+  .tagline{font-size:clamp(1.05rem,3.6vw,1.4rem);max-width:32ch;margin:16px auto 0;text-wrap:balance;}
+  .tagline b{color:var(--gold);font-weight:600;}
+
+  .clockline{
+    font-family:var(--mono);margin:26px 0 4px;
+  }
+  .clockline .lab{display:block;font-size:0.66rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;}
+  .clockline .clock{
+    font-weight:700;font-size:clamp(1.9rem,8vw,3rem);letter-spacing:0.02em;color:var(--gold);
+    font-variant-numeric:tabular-nums;text-shadow:0 0 22px rgba(240,185,11,0.25);
+  }
+  .clockline .clock.done{font-family:var(--display);letter-spacing:0.06em;}
+
+  /* CTAs */
+  .ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:30px 0 0;}
+  .btn{
+    font-family:var(--mono);font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;
+    padding:13px 20px;border:1px solid var(--line);color:var(--bone);background:var(--panel);
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .15s ease;
+  }
+  .btn.primary{border-color:var(--gold);color:var(--gold);}
+  .btn.primary:hover{background:var(--gold);color:var(--void);}
+  .btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+  .btn.soon{color:var(--ash-dim);cursor:default;}
+  .btn.soon .tag{font-size:0.62rem;color:var(--ash-dim);border:1px solid var(--line);padding:2px 6px;}
+
+  /* generic */
+  section{margin-top:clamp(46px,8vw,74px);}
+  .eyebrow{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;margin:0 0 18px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  h2{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:0.01em;font-size:clamp(1.6rem,5.5vw,2.3rem);line-height:1;margin:0 0 14px;text-wrap:balance;}
+  p{margin:0 0 16px;}
+  .lede{font-size:1.1rem;max-width:60ch;}
+  .muted{color:var(--ash);}
+
+  /* why cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;}
+  .card{border:1px solid var(--line);background:var(--panel);padding:20px;}
+  .card h3{font-family:var(--mono);font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:0 0 10px;}
+  .card p{margin:0;color:var(--ash);font-size:0.95rem;}
+  .seeall{margin-top:16px;font-family:var(--mono);font-size:0.8rem;}
+
+  /* verify steps */
+  .steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;}
+  .steps li{display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--line);}
+  .steps li:last-child{border-bottom:1px solid var(--line);}
+  .steps .n{font-family:var(--mono);font-weight:700;color:var(--gold);font-size:1.05rem;flex:0 0 auto;width:2ch;font-variant-numeric:tabular-nums;}
+  .steps .t{margin:0;}
+  .steps .t b{color:var(--bone);}
+  .steps .t code{font-family:var(--mono);color:var(--gold-hi);font-size:0.9em;}
+
+  /* creed */
+  .creed{text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:34px 12px;margin-top:clamp(46px,8vw,74px);}
+  .creed p{font-family:var(--display);text-transform:uppercase;letter-spacing:0.02em;font-size:clamp(1.25rem,4.6vw,1.9rem);line-height:1.15;color:var(--ash);margin:0;}
+  .creed p .k{color:var(--gold);display:block;}
+
+  /* official / footer */
+  footer{margin-top:clamp(40px,7vw,60px);}
+  .official{border:1px solid var(--gold-dim);background:rgba(240,185,11,0.04);padding:20px 22px;}
+  .official h3{font-family:var(--mono);font-size:0.76rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin:0 0 12px;}
+  .official ul{margin:0 0 14px;padding-left:18px;color:var(--bone);font-family:var(--mono);font-size:0.86rem;}
+  .official li{margin:4px 0;}
+  .official .warn{color:var(--ash);font-size:0.86rem;margin:0;}
+  .official .warn b{color:var(--gold-hi);font-weight:600;}
+  .fine{font-size:0.8rem;color:var(--ash-dim);line-height:1.6;margin-top:20px;}
+  .fine b{color:var(--ash);font-weight:600;}
+  a{color:var(--gold-hi);}
+
+  @media (max-width:520px){.btn{flex:1 1 100%;justify-content:center;}}
+</style>
+
+<main class="knife">
+  <div class="col">
+
+    <header class="hero">
+      <svg class="mark" viewBox="0 0 200 200" role="img" aria-label="A gold dagger through a shattered hexagon">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F0B90B" stop-opacity="0.20"/>
+            <stop offset="72%" stop-color="#F0B90B" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="99" fill="url(#glow)"/>
+        <polygon points="170,100 135,160.6 65,160.6 30,100 65,39.4 135,39.4" fill="none" stroke="#F0B90B" stroke-width="3" stroke-opacity="0.55"/>
+        <g stroke="#F0B90B" stroke-width="1.4" stroke-opacity="0.45">
+          <line x1="126" y1="47" x2="104" y2="94"/>
+          <line x1="58" y1="118" x2="96" y2="103"/>
+          <line x1="150" y1="150" x2="110" y2="108"/>
+        </g>
+        <g transform="translate(100,100) rotate(-45)">
+          <rect x="-34" y="-3.5" width="27" height="7" fill="#9a7a12"/>
+          <circle cx="-37" cy="0" r="4.6" fill="#B8860B"/>
+          <rect x="-10" y="-13" width="6" height="26" fill="#B8860B"/>
+          <polygon points="74,0 -4,-6.5 -4,6.5" fill="#F0B90B"/>
+          <polygon points="74,0 -4,-6.5 -4,-1.5" fill="#F3BA2F"/>
+        </g>
+      </svg>
+
+      <h1 class="wordmark">MAC<span class="the">the</span>KNIFE</h1>
+      <p class="ticker">$KNIFE &nbsp;·&nbsp; BNB Chain</p>
+      <p class="tagline">The MAC is the machine's face. The Knife <b>removes</b> it.</p>
+
+      <div class="clockline">
+        <span class="lab">Control expires in — The Deadhand Cut</span>
+        <span class="clock" id="deadhand" aria-hidden="true">71:59:12</span>
+      </div>
+
+      <nav class="ctas">
+        <a class="btn primary" href="https://claude.ai/code/artifact/0da6a2a8-26e3-48a1-87a9-f49c4770ea27" target="_blank" rel="noopener">Read the Litepaper</a>
+        <span class="btn soon">Buy $KNIFE <span class="tag">at launch</span></span>
+        <span class="btn soon">Verify on BscScan <span class="tag">at launch</span></span>
+      </nav>
+    </header>
+
+    <section>
+      <p class="eyebrow">What is $KNIFE</p>
+      <h2>The token scammers can't copy</h2>
+      <p class="lede">A meme with a spine. $KNIFE is a fair-launch token on BNB Chain built on one idea: <b style="color:var(--bone);font-weight:600">honesty as a weapon.</b> Every rug depends on a hidden hand — a secret mint, a blacklist, a tax dial. This contract amputates its own hand on a public 72-hour timer, then runs ownerless forever. You don't trust that. You verify it.</p>
+    </section>
+
+    <section>
+      <p class="eyebrow">Why it can't rug you</p>
+      <h2>No hidden hand</h2>
+      <div class="cards">
+        <div class="card"><h3>Fixed supply</h3><p>Minted once at deploy. No mint function exists — supply can never grow.</p></div>
+        <div class="card"><h3>No blacklist · 0% tax</h3><p>No wallet can be frozen. Every transfer delivers 100%. There is no fee path to raise.</p></div>
+        <div class="card"><h3>Self-renouncing</h3><p>Every owner power dies on a 72h timer — automatically, permanently, even if the team vanishes.</p></div>
+      </div>
+      <p class="seeall"><a href="https://claude.ai/code/artifact/0da6a2a8-26e3-48a1-87a9-f49c4770ea27" target="_blank" rel="noopener">See all the receipts in the litepaper →</a></p>
+    </section>
+
+    <section>
+      <p class="eyebrow">Trust nothing — check it yourself</p>
+      <h2>Verify in three steps</h2>
+      <ol class="steps">
+        <li><span class="n">01</span><p class="t"><b>Read <code>status()</code> on BscScan.</b> One call returns the whole safety picture: trading, cap, the countdown deadline, ownership, supply.</p></li>
+        <li><span class="n">02</span><p class="t"><b>Confirm ownership is gone.</b> <code>owner()</code> should return <code>0x0000…0000</code> once renounced — or watch the control deadline pass on-chain.</p></li>
+        <li><span class="n">03</span><p class="t"><b>Check the liquidity lock.</b> The LP tokens should be locked or burned, with the proof published. No lock, no trust.</p></li>
+      </ol>
+    </section>
+
+    <div class="creed" aria-label="The creed">
+      <p>
+        We do not forgive the rug.<br>
+        We do not forget the wallet.<br>
+        <span class="k">We wear no master.</span>
+        Expect the Cut.
+      </p>
+    </div>
+
+    <footer>
+      <div class="official">
+        <h3>▸ Official links only</h3>
+        <ul>
+          <li>Website: mactheknife.xyz — the ONLY official site</li>
+          <li>X: coming soon &nbsp;·&nbsp; Telegram: coming soon</li>
+          <li>Contract: TBA at launch — verify on BscScan</li>
+        </ul>
+        <p class="warn"><b>We will never DM you first. We will never ask for your seed phrase.</b> Anyone who does is an impostor. Always check the contract address against this page before you buy.</p>
+      </div>
+      <p class="fine"><b>Honest risk.</b> $KNIFE is a meme/culture token — not an investment, a security, or a promise. No revenue, no yield, no entitlement. Crypto is volatile and can go to zero; smart contracts can carry bugs even when transparent — get an independent audit before trusting real value to any contract. Do your own research. Nothing here is financial advice, and no price or return is promised or implied.</p>
+      <p class="fine">The MAC the Knife universe is fiction; the contract claims are the ones to verify on-chain. This page targets no person and describes no real-world capability.</p>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+  (function(){
+    var el = document.getElementById('deadhand');
+    if(!el){ return; }
+    var total = 71*3600 + 59*60 + 12;
+    function p(n){ return (n<10?'0':'')+n; }
+    function tick(){
+      if(total <= 0){ el.textContent = 'OWNERLESS'; el.classList.add('done'); return; }
+      var h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60;
+      el.textContent = p(h)+':'+p(m)+':'+p(s);
+      total--;
+      setTimeout(tick, 1000);
+    }
+    tick();
+  })();
+</script>

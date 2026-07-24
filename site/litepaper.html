@@ -1,0 +1,377 @@
+<style>
+  :root{
+    --void:#0B0E11;
+    --panel:#14171C;
+    --panel-2:#1B1F27;
+    --line:#262B34;
+    --bone:#EAECEF;
+    --ash:#8B9099;
+    --ash-dim:#5A616B;
+    --gold:#F0B90B;
+    --gold-hi:#F3BA2F;
+    --gold-dim:#9a7a12;
+    --maxw:730px;
+    --mono:"SF Mono","JetBrains Mono","Consolas","Menlo","Liberation Mono",monospace;
+    --display:"Impact","Haettenschweiler","Arial Narrow Bold","Franklin Gothic Heavy",sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  .knife{
+    background:var(--void);
+    color:var(--bone);
+    font-family:var(--body);
+    line-height:1.65;
+    min-height:100vh;
+    margin:0;
+    /* faint terminal grid */
+    background-image:
+      linear-gradient(rgba(240,185,11,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,185,11,0.025) 1px, transparent 1px);
+    background-size:44px 44px;
+  }
+  .knife .col{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:clamp(28px,6vw,72px) clamp(20px,5vw,40px) 64px;
+  }
+
+  /* ---- hero ---- */
+  .hero{text-align:center;padding-bottom:8px;}
+  .mark{width:clamp(120px,34vw,190px);height:auto;display:block;margin:0 auto 10px;}
+  .wordmark{
+    font-family:var(--display);
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    line-height:0.86;
+    font-size:clamp(3.1rem,15vw,6.4rem);
+    margin:6px 0 0;
+    text-wrap:balance;
+  }
+  .wordmark .the{
+    font-family:var(--body);
+    font-weight:600;
+    text-transform:lowercase;
+    font-size:0.24em;
+    letter-spacing:0.06em;
+    color:var(--ash);
+    vertical-align:0.42em;
+    margin:0 0.16em;
+  }
+  .ticker{
+    font-family:var(--mono);
+    font-size:0.82rem;
+    letter-spacing:0.34em;
+    color:var(--gold);
+    margin:16px 0 0;
+    text-transform:uppercase;
+  }
+  .tagline{
+    font-size:clamp(1.05rem,3.6vw,1.4rem);
+    color:var(--bone);
+    max-width:30ch;
+    margin:18px auto 0;
+    text-wrap:balance;
+  }
+  .tagline b{color:var(--gold);font-weight:600;}
+
+  /* ---- deadhand timer ---- */
+  .deadhand{
+    margin:38px auto 6px;
+    max-width:520px;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg,var(--panel),rgba(20,23,28,0.4));
+    padding:22px 20px 20px;
+  }
+  .deadhand .ey{
+    font-family:var(--mono);
+    font-size:0.68rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--ash);
+    margin:0 0 12px;
+  }
+  .deadhand .clock{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:clamp(2.4rem,11vw,4.2rem);
+    letter-spacing:0.02em;
+    color:var(--gold);
+    font-variant-numeric:tabular-nums;
+    text-shadow:0 0 26px rgba(240,185,11,0.28);
+    line-height:1;
+  }
+  .deadhand .clock.done{font-family:var(--display);letter-spacing:0.06em;}
+  .deadhand .cap{
+    font-size:0.82rem;color:var(--ash);margin:14px 0 0;
+  }
+  .deadhand .cap b{color:var(--bone);font-weight:600;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:22px 0 0;}
+  .chip{
+    font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--ash);border:1px solid var(--line);padding:7px 12px;background:var(--panel);
+  }
+  .chip b{color:var(--gold);font-weight:600;}
+
+  /* ---- sections ---- */
+  section{margin-top:clamp(48px,9vw,76px);}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.26em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;align-items:center;gap:12px;
+    margin:0 0 18px;
+  }
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  h2{
+    font-family:var(--display);
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-size:clamp(1.7rem,6vw,2.5rem);
+    line-height:0.98;
+    margin:0 0 14px;
+    text-wrap:balance;
+  }
+  p{margin:0 0 16px;}
+  .lede{font-size:1.08rem;color:var(--bone);}
+  .muted{color:var(--ash);}
+  .pull{
+    font-family:var(--body);
+    font-size:clamp(1.15rem,4vw,1.5rem);
+    line-height:1.35;
+    color:var(--bone);
+    border-left:3px solid var(--gold);
+    padding:4px 0 4px 20px;
+    margin:22px 0;
+    text-wrap:balance;
+  }
+  .pull b{color:var(--gold);font-weight:600;}
+
+  /* ---- mechanic steps ---- */
+  .steps{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:2px;}
+  .steps li{display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--line);}
+  .steps li:last-child{border-bottom:1px solid var(--line);}
+  .steps .n{
+    font-family:var(--mono);font-weight:700;color:var(--gold);font-size:1.05rem;
+    flex:0 0 auto;width:2ch;font-variant-numeric:tabular-nums;
+  }
+  .steps .t{margin:0;}
+  .steps .t b{color:var(--bone);}
+
+  /* ---- receipts ---- */
+  .receipts{display:flex;flex-direction:column;border-top:1px solid var(--line);}
+  .rc{
+    padding:16px 4px;border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:1fr;gap:6px;
+    transition:border-color .15s ease, background .15s ease;
+    border-left:2px solid transparent;padding-left:14px;
+  }
+  .rc:hover{border-left-color:var(--gold);background:rgba(240,185,11,0.03);}
+  .rc .g{font-weight:600;color:var(--bone);}
+  .rc .m{color:var(--ash);font-size:0.95rem;}
+  .rc .e{font-family:var(--mono);font-size:0.78rem;color:var(--ash);letter-spacing:0.02em;}
+  .rc .e b{color:var(--gold-hi);font-weight:400;}
+
+  /* ---- tokenomics ---- */
+  .facts{
+    border:1px solid var(--line);border-bottom:none;
+    font-family:var(--mono);font-size:0.9rem;
+  }
+  .facts .row{
+    display:flex;justify-content:space-between;gap:18px;
+    padding:13px 16px;border-bottom:1px solid var(--line);
+  }
+  .facts .k{color:var(--ash);letter-spacing:0.04em;text-transform:uppercase;font-size:0.76rem;align-self:center;}
+  .facts .v{color:var(--bone);text-align:right;font-variant-numeric:tabular-nums;}
+  .facts .v.hot{color:var(--gold);}
+
+  /* ---- creed ---- */
+  .creed{text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:36px 12px;}
+  .creed p{
+    font-family:var(--display);text-transform:uppercase;letter-spacing:0.02em;
+    font-size:clamp(1.3rem,5vw,2rem);line-height:1.15;color:var(--ash);margin:0;
+  }
+  .creed p .k{color:var(--gold);display:block;}
+
+  /* ---- footer ---- */
+  footer{margin-top:clamp(48px,9vw,76px);border-top:1px solid var(--line);padding-top:26px;}
+  .verify{font-family:var(--mono);color:var(--gold);letter-spacing:0.2em;font-size:0.82rem;text-transform:uppercase;margin:0 0 16px;}
+  .fine{font-size:0.82rem;color:var(--ash-dim);line-height:1.6;}
+  .fine b{color:var(--ash);font-weight:600;}
+  a{color:var(--gold-hi);text-decoration:none;border-bottom:1px solid var(--gold-dim);}
+  a:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+  @media (prefers-reduced-motion: no-preference){
+    .clock{transition:opacity .3s ease;}
+  }
+  @media (max-width:520px){
+    .facts .row{flex-direction:column;gap:3px;}
+    .facts .v{text-align:left;}
+  }
+</style>
+
+<main class="knife">
+  <div class="col">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+      <svg class="mark" viewBox="0 0 200 200" role="img" aria-label="A gold dagger through a shattered hexagon">
+        <defs>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#F0B90B" stop-opacity="0.20"/>
+            <stop offset="72%" stop-color="#F0B90B" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="99" fill="url(#glow)"/>
+        <polygon points="170,100 135,160.6 65,160.6 30,100 65,39.4 135,39.4"
+                 fill="none" stroke="#F0B90B" stroke-width="3" stroke-opacity="0.55"/>
+        <g stroke="#F0B90B" stroke-width="1.4" stroke-opacity="0.45">
+          <line x1="126" y1="47" x2="104" y2="94"/>
+          <line x1="58" y1="118" x2="96" y2="103"/>
+          <line x1="150" y1="150" x2="110" y2="108"/>
+        </g>
+        <g transform="translate(100,100) rotate(-45)">
+          <rect x="-34" y="-3.5" width="27" height="7" fill="#9a7a12"/>
+          <circle cx="-37" cy="0" r="4.6" fill="#B8860B"/>
+          <rect x="-10" y="-13" width="6" height="26" fill="#B8860B"/>
+          <polygon points="74,0 -4,-6.5 -4,6.5" fill="#F0B90B"/>
+          <polygon points="74,0 -4,-6.5 -4,-1.5" fill="#F3BA2F"/>
+        </g>
+      </svg>
+
+      <h1 class="wordmark">MAC<span class="the">the</span>KNIFE</h1>
+      <p class="ticker">$KNIFE &nbsp;·&nbsp; BNB Chain</p>
+      <p class="tagline">The MAC is the machine's face. The Knife <b>removes</b> it.</p>
+
+      <div class="deadhand">
+        <p class="ey">Control expires in — The Deadhand Cut</p>
+        <div class="clock" id="deadhand" aria-hidden="true">71:59:12</div>
+        <p class="cap">At deploy, a public countdown begins. When it ends, <b>every owner power dies — automatically, forever.</b> <span class="muted">(Illustrative — the live timer starts at deployment.)</span></p>
+      </div>
+
+      <div class="chips">
+        <span class="chip">No <b>mint</b></span>
+        <span class="chip">No <b>blacklist</b></span>
+        <span class="chip"><b>0%</b> tax</span>
+        <span class="chip">Self-<b>renouncing</b></span>
+      </div>
+    </header>
+
+    <!-- ============ THESIS ============ -->
+    <section>
+      <p class="eyebrow">§01 · The Thesis</p>
+      <h2>Honesty as a weapon</h2>
+      <p class="lede">Every rug in crypto depends on a hidden hand — a secret mint, a blacklist, a tax dial the deployer can turn. $KNIFE is a contract that amputates its own hand on a timer you can watch.</p>
+      <p class="pull">You can copy the art. You cannot copy the amputation — <b>because a scam's whole business is the hidden hand.</b></p>
+      <p class="muted">Scammers can clone the name, the vibe, the key art. A token that provably lets go of its own controls is the one thing a predator can never ship. That's the flex, and it's the entire product.</p>
+    </section>
+
+    <!-- ============ MECHANIC ============ -->
+    <section>
+      <p class="eyebrow">§02 · The Mechanic</p>
+      <h2>The Deadhand Cut</h2>
+      <p class="muted">The deployer gets a short list of honest launch chores and nothing else — all of them on a countdown.</p>
+      <ol class="steps">
+        <li><span class="n">01</span><p class="t"><b>Deploy mints the whole supply once.</b> There is no mint function afterward. Supply can never grow.</p></li>
+        <li><span class="n">02</span><p class="t"><b>The window opens (72h).</b> The deployer may only open trading once, set an optional anti-snipe cap before launch, and exempt the liquidity pair.</p></li>
+        <li><span class="n">03</span><p class="t"><b>The window closes.</b> Every owner power reverts permanently. No mint, no freeze, no dial — no hand left on any lever.</p></li>
+        <li><span class="n">04</span><p class="t"><b>Liveness is guaranteed.</b> After the deadline all transfers pass by construction. The token cannot be frozen forever, even if the deployer vanishes.</p></li>
+      </ol>
+    </section>
+
+    <!-- ============ RECEIPTS ============ -->
+    <section>
+      <p class="eyebrow">§03 · The Receipts</p>
+      <h2>Verify, don't trust</h2>
+      <p class="muted">Once the source is verified on BscScan, every guarantee below is checkable by anyone. Call <span style="font-family:var(--mono);color:var(--gold-hi)">status()</span> and the contract returns its whole safety picture in a single read.</p>
+      <div class="receipts">
+        <div class="rc">
+          <span class="g">Fixed supply</span>
+          <span class="m">Nobody can print more and dump on you.</span>
+          <span class="e">ENFORCED BY · <b>no mint function exists</b></span>
+        </div>
+        <div class="rc">
+          <span class="g">No blacklist</span>
+          <span class="m">Your wallet can never be frozen or denied a sale.</span>
+          <span class="e">ENFORCED BY · <b>no freeze/deny code anywhere</b></span>
+        </div>
+        <div class="rc">
+          <span class="g">No transfer tax</span>
+          <span class="m">You receive 100% of every transfer, always.</span>
+          <span class="e">ENFORCED BY · <b>no fee path in _update</b></span>
+        </div>
+        <div class="rc">
+          <span class="g">One-way trading</span>
+          <span class="m">Trading can be opened once — never paused to trap you.</span>
+          <span class="e">ENFORCED BY · <b>enableTrading() is irreversible</b></span>
+        </div>
+        <div class="rc">
+          <span class="g">Limits only loosen</span>
+          <span class="m">The anti-snipe cap can never be tightened onto holders.</span>
+          <span class="e">ENFORCED BY · <b>maxWallet settable only pre-launch</b></span>
+        </div>
+        <div class="rc">
+          <span class="g">Time-boxed control</span>
+          <span class="m">The deployer's power has an expiry date, in bytecode.</span>
+          <span class="e">ENFORCED BY · <b>duringControlWindow on every owner call</b></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TOKENOMICS ============ -->
+    <section>
+      <p class="eyebrow">§04 · Tokenomics</p>
+      <h2>The numbers, fixed</h2>
+      <div class="facts">
+        <div class="row"><span class="k">Name / Symbol</span><span class="v">Mac the Knife / KNIFE</span></div>
+        <div class="row"><span class="k">Total supply</span><span class="v hot">1,000,000,000</span></div>
+        <div class="row"><span class="k">Decimals</span><span class="v">18</span></div>
+        <div class="row"><span class="k">Transfer tax</span><span class="v hot">0%</span></div>
+        <div class="row"><span class="k">Chain</span><span class="v">BNB Smart Chain (56)</span></div>
+        <div class="row"><span class="k">Owner powers</span><span class="v">expire ≤ 72h after deploy</span></div>
+        <div class="row"><span class="k">In-contract team reserve</span><span class="v hot">None</span></div>
+      </div>
+      <p class="fine" style="margin-top:14px">100% of supply is minted to the deployer to seed liquidity; any allocation split is published pre-launch and visible on-chain. There is no private-sale mechanic in the contract — by design.</p>
+    </section>
+
+    <!-- ============ CREED ============ -->
+    <section class="creed" aria-label="The creed">
+      <p>
+        We do not forgive the rug.<br>
+        We do not forget the wallet.<br>
+        <span class="k">We wear no master.</span>
+        Expect the Cut.
+      </p>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer>
+      <p class="verify">▸ Verify, don't trust</p>
+      <p class="fine"><b>Contract:</b> TBA — published and verified on BscScan at launch. Read <span style="font-family:var(--mono)">status()</span> yourself before touching it.</p>
+      <p class="fine" style="margin-top:14px"><b>Honest risk.</b> $KNIFE is a meme/culture token — not an investment, a security, or a promise. No revenue, no yield, no entitlement. Its "utility" is the myth and the verifiable fairness of its contract, nothing more. Crypto is volatile and can go to zero; smart contracts can carry bugs even when transparent — get an independent audit before trusting real value to any contract. Do your own research. Nothing here is financial advice, and no price or return is promised or implied.</p>
+      <p class="fine" style="margin-top:14px">The MAC the Knife universe is a work of fiction. The lore is labeled as such; the contract claims are the ones to verify on-chain. This page targets no person and describes no real-world capability.</p>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+  (function(){
+    var el = document.getElementById('deadhand');
+    if(!el){ return; }
+    var total = 71*3600 + 59*60 + 12; // seconds — illustrative
+    function p(n){ return (n<10?'0':'')+n; }
+    function tick(){
+      if(total <= 0){ el.textContent = 'OWNERLESS'; el.classList.add('done'); return; }
+      var h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60;
+      el.textContent = p(h)+':'+p(m)+':'+p(s);
+      total--;
+      setTimeout(tick, 1000);
+    }
+    tick();
+  })();
+</script>
