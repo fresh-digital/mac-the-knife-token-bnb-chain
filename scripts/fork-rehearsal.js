@@ -1,131 +1,166 @@
 /**
- * Full launch rehearsal for MacTheKnife (KNIFE) on a forked BSC mainnet.
- * No real funds or private keys required.
+ * Exact Open Book launch rehearsal against PancakeSwap V2 on a BSC mainnet fork.
+ * No real funds or private keys are used.
  *
- *   PowerShell:  $env:FORK="true"; npx hardhat run scripts/fork-rehearsal.js
- *   bash:        FORK=true npx hardhat run scripts/fork-rehearsal.js
- *
- * Exercises the exact mainnet launch sequence against the REAL PancakeSwap v2
- * router, then proves the Deadhand Cut end to end:
- *   1. Deploy with a short control window
- *   2. Add KNIFE/BNB liquidity (deployer is limit-exempt, so pre-launch add works)
- *   3. Exempt the LP pair, then open trading (one-way)
- *   4. Buy from a second wallet
- *   5. Sell back — the honeypot check; this MUST succeed
- *   6. Burn reduces supply
- *   7. Warp past controlDeadline and prove: transfers stay free forever and
- *      every owner power is dead (ControlWindowClosed)
+ * Exercises:
+ *   1. Deploy KNIFE with the published 72h Deadhand
+ *   2. Put 100% of supply + 10 BNB into KNIFE/BNB
+ *   3. Exempt pair/router and set the published 1% launch cap
+ *   4. Enable trading, burn every deployer LP token, and renounce ownership
+ *   5. Buy, burn, and sell from a second wallet
+ *   6. Cross the Deadhand deadline and prove holder transfers remain live
  */
-const { ethers, network } = require("hardhat");
+const hre = require("hardhat");
+const { ethers } = hre;
 const { time } = require("@nomicfoundation/hardhat-network-helpers");
+const {
+  PAIR_ABI,
+  executeOpenBookLaunch,
+} = require("./lib/open-book-launch");
 
-const PANCAKE_V2_ROUTER = "0x10ED43C718714eb63d5aA57B78B54704E256024E";
-const ROUTER_ABI = [
+const SWAP_ROUTER_ABI = [
   "function WETH() view returns (address)",
-  "function factory() view returns (address)",
-  "function addLiquidityETH(address token,uint amountTokenDesired,uint amountTokenMin,uint amountETHMin,address to,uint deadline) payable returns (uint amountToken,uint amountETH,uint liquidity)",
   "function swapExactETHForTokensSupportingFeeOnTransferTokens(uint amountOutMin,address[] path,address to,uint deadline) payable",
   "function swapExactTokensForETHSupportingFeeOnTransferTokens(uint amountIn,uint amountOutMin,address[] path,address to,uint deadline)",
 ];
-const FACTORY_ABI = ["function getPair(address,address) view returns (address)"];
 
-function assert(cond, msg) {
-  if (!cond) throw new Error(`REHEARSAL FAILED: ${msg}`);
+function assert(condition, message) {
+  if (!condition) throw new Error(`REHEARSAL FAILED: ${message}`);
 }
 
 async function main() {
   if (process.env.FORK !== "true") {
-    throw new Error('Run with FORK=true so the hardhat network forks BSC mainnet.');
+    throw new Error("Run with FORK=true so Hardhat forks BSC mainnet.");
   }
 
-  const [deployer, buyer, carol] = await ethers.getSigners();
-  console.log(`Forked BSC at block ${await ethers.provider.getBlockNumber()}`);
-
-  // 1. Deploy with a 1-hour control window.
-  const CONTROL_WINDOW = 60 * 60;
-  const Knife = await ethers.getContractFactory("MacTheKnife");
-  const knife = await Knife.deploy(deployer.address, CONTROL_WINDOW);
-  await knife.waitForDeployment();
-  const tokenAddr = await knife.getAddress();
-  console.log(`1) MacTheKnife deployed: ${tokenAddr}`);
-
-  const router = new ethers.Contract(PANCAKE_V2_ROUTER, ROUTER_ABI, deployer);
+  const checkpoints = [];
+  const record = await executeOpenBookLaunch(hre, {
+    verifySource: false,
+    onCheckpoint(checkpoint) {
+      checkpoints.push(checkpoint);
+    },
+  });
+  const [, buyer, carol] = await ethers.getSigners();
+  const knife = await ethers.getContractAt("MacTheKnife", record.token);
+  const router = new ethers.Contract(
+    record.router,
+    SWAP_ROUTER_ABI,
+    buyer
+  );
+  const pair = new ethers.Contract(record.pair, PAIR_ABI, buyer);
   const wbnb = await router.WETH();
-  const deadline = async () => (await time.latest()) + 1200;
+  const deadline = async () => (await time.latest()) + 1_200;
+  const expectedTransactions = [
+    "deployment",
+    "approval",
+    "addLiquidity",
+    "pairExemption",
+    "routerExemption",
+    "maxWallet",
+    "enableTrading",
+    "burnLp",
+    "renounceOwnership",
+  ];
+  for (const transaction of expectedTransactions) {
+    assert(
+      checkpoints.some(
+        (checkpoint) =>
+          checkpoint.event === "transaction-broadcast" &&
+          checkpoint.transaction === transaction
+      ),
+      `journal missed ${transaction} broadcast`
+    );
+    assert(
+      checkpoints.some(
+        (checkpoint) =>
+          checkpoint.event === "transaction-confirmed" &&
+          checkpoint.transaction === transaction
+      ),
+      `journal missed ${transaction} confirmation`
+    );
+  }
+  assert(
+    checkpoints.some(
+      (checkpoint) =>
+        checkpoint.event === "transaction-broadcast" &&
+        checkpoint.transaction === "deployment" &&
+        checkpoint.token === record.token
+    ),
+    "journal cannot recover the deployed token address"
+  );
+  console.log("8) Every launch transaction was durably checkpointable.");
 
-  // 2. Add liquidity while trading is still closed (deployer is exempt).
-  const lpTokens = ethers.parseUnits("100000000", 18); // 100M KNIFE
-  const lpBnb = ethers.parseEther("100");
-  await (await knife.approve(PANCAKE_V2_ROUTER, lpTokens)).wait();
+  assert((await knife.owner()) === ethers.ZeroAddress, "owner was not renounced");
+  assert(
+    (await pair.balanceOf(record.deployer)) === 0n,
+    "deployer retained LP tokens"
+  );
+  assert(
+    (await pair.balanceOf(record.lpBurnAddress)) > 0n,
+    "burn address holds no LP tokens"
+  );
+  console.log("9) Ownership renounced and deployer LP balance is zero.");
+
+  const buyBnb = ethers.parseEther("0.05");
   await (
-    await router.addLiquidityETH(tokenAddr, lpTokens, lpTokens, lpBnb, deployer.address, await deadline(), {
-      value: lpBnb,
-    })
-  ).wait();
-  const factory = new ethers.Contract(await router.factory(), FACTORY_ABI, deployer);
-  const pair = await factory.getPair(tokenAddr, wbnb);
-  console.log(`2) Liquidity added while trading closed. Pair: ${pair}`);
-
-  // 3. Exempt the pair from limits, then open trading (one-way).
-  await (await knife.setLimitExempt(pair, true)).wait();
-  await (await knife.enableTrading()).wait();
-  assert(await knife.tradingEnabled(), "trading did not enable");
-  console.log(`3) Pair exempted, trading opened (one-way).`);
-
-  // 4. Buy from a second wallet.
-  const buyBnb = ethers.parseEther("1");
-  await (
-    await router
-      .connect(buyer)
-      .swapExactETHForTokensSupportingFeeOnTransferTokens(0, [wbnb, tokenAddr], buyer.address, await deadline(), {
-        value: buyBnb,
-      })
+    await router.swapExactETHForTokensSupportingFeeOnTransferTokens(
+      0,
+      [wbnb, record.token],
+      buyer.address,
+      await deadline(),
+      { value: buyBnb }
+    )
   ).wait();
   const bought = await knife.balanceOf(buyer.address);
-  assert(bought > 0n, "buy returned 0 tokens");
-  console.log(`4) Buy OK: 1 BNB -> ${ethers.formatUnits(bought, 18)} KNIFE`);
+  assert(bought > 0n, "buy returned zero KNIFE");
+  assert(bought <= BigInt(record.maxWallet), "buy bypassed the 1% max wallet");
+  console.log(`10) Buy OK: 0.05 BNB -> ${ethers.formatUnits(bought, 18)} KNIFE.`);
 
-  // 5. Sell back — honeypot check.
+  const burnAmount = bought / 4n;
+  const supplyBefore = await knife.totalSupply();
+  await (await knife.connect(buyer).burn(burnAmount)).wait();
+  assert(
+    (await knife.totalSupply()) === supplyBefore - burnAmount,
+    "holder burn did not reduce supply"
+  );
+  console.log("11) Holder burn reduced total supply.");
+
+  const sellAmount = bought / 2n;
   const bnbBefore = await ethers.provider.getBalance(buyer.address);
-  await (await knife.connect(buyer).approve(PANCAKE_V2_ROUTER, bought)).wait();
+  await (await knife.connect(buyer).approve(record.router, sellAmount)).wait();
   await (
-    await router
-      .connect(buyer)
-      .swapExactTokensForETHSupportingFeeOnTransferTokens(bought, 0, [tokenAddr, wbnb], buyer.address, await deadline())
+    await router.swapExactTokensForETHSupportingFeeOnTransferTokens(
+      sellAmount,
+      0,
+      [record.token, wbnb],
+      buyer.address,
+      await deadline()
+    )
   ).wait();
   const bnbAfter = await ethers.provider.getBalance(buyer.address);
-  assert(bnbAfter > bnbBefore, "sell returned no BNB — honeypot behaviour");
-  console.log(`5) Sell OK: received ~${ethers.formatEther(bnbAfter - bnbBefore)} BNB back — NOT a honeypot`);
+  assert(bnbAfter > bnbBefore, "sell returned no BNB");
+  console.log("12) Sell OK: KNIFE returned BNB after LP burn and renunciation.");
 
-  // 6. Burn.
-  const burnAmount = ethers.parseUnits("1000000", 18);
-  const supplyBefore = await knife.totalSupply();
-  await (await knife.burn(burnAmount)).wait();
-  assert((await knife.totalSupply()) === supplyBefore - burnAmount, "burn did not reduce supply");
-  console.log(`6) Burn OK: supply now ${ethers.formatUnits(await knife.totalSupply(), 18)} KNIFE`);
-
-  // 7. The Deadhand Cut: warp past the deadline, prove freedom + dead powers.
+  const holderRemainder = await knife.balanceOf(buyer.address);
+  assert(holderRemainder > 0n, "buyer has no KNIFE left for liveness proof");
   await time.increaseTo((await knife.controlDeadline()) + 1n);
-  // Seed a fresh holder from the deployer, then move between two non-exempt
-  // wallets (carol -> buyer) to prove the gate is gone, not just deployer-bypassed.
-  await (await knife.transfer(carol.address, 1000n)).wait();
-  await (await knife.connect(carol).transfer(buyer.address, 500n)).wait();
-  assert((await knife.balanceOf(buyer.address)) === 500n, "post-deadline transfer did not land");
-  console.log(`7a) Post-deadline transfers between non-exempt wallets: FREE.`);
-  let powersDead = false;
-  try {
-    await knife.enableTrading();
-  } catch (e) {
-    powersDead = /ControlWindowClosed/.test(e.message);
-  }
-  assert(powersDead, "owner powers still callable after deadline");
-  assert((await knife.status())[3] === false, "status() still reports control window open");
-  console.log(`7b) Owner powers dead after deadline (ControlWindowClosed). The token is ownerless-by-clock.`);
+  await (
+    await knife.connect(buyer).transfer(carol.address, holderRemainder)
+  ).wait();
+  assert(
+    (await knife.balanceOf(carol.address)) === holderRemainder,
+    "post-deadline holder transfer did not land"
+  );
+  assert((await knife.status()).controlWindowOpen_ === false, "Deadhand did not fire");
+  console.log("13) Deadhand fired; holder-to-holder transfer remains live.");
 
-  console.log(`\nREHEARSAL PASSED — deploy, LP add, buy, sell, burn, and the Deadhand Cut all verified against the real PancakeSwap router.`);
+  console.log(
+    "\nREHEARSAL PASSED — the exact Open Book profile deploys, seeds liquidity, " +
+      "burns LP, renounces, buys, burns, sells, and remains live after the Cut."
+  );
 }
 
-main().catch((err) => {
-  console.error(err);
+main().catch((error) => {
+  console.error(error);
   process.exitCode = 1;
 });

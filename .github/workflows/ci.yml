@@ -17,7 +17,9 @@ jobs:
       - run: npm ci
       - run: npx hardhat compile
       - run: npx hardhat test
+      - run: npm run check:release-files
       - run: npx hardhat coverage
+      - run: npm run audit:production
 
   lint:
     runs-on: ubuntu-latest

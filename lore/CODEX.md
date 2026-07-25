@@ -113,14 +113,14 @@ blade.
 This is where lore and token become the same object, and it's the strongest card you hold.
 
 The Knife's law: **a blade you can trust is one that will cut off its own hand on a timer.** He builds
-nothing he can't sever from himself. So $KNIFE is a token that **renounces its own master** — at deploy
-it starts a public 72‑hour countdown, and when it hits zero every privileged power dies automatically,
-forever, whether the deployer likes it or not. No mint. No blacklist. No trapdoor. No hand left on the
-lever.
+nothing he can't sever from himself. The Open Book launch renounces ownership immediately, while
+$KNIFE independently starts a public 72‑hour countdown. When it hits zero every privileged power dies
+automatically, forever, whether the deployer likes it or not. No mint. No blacklist. No trapdoor. No
+hand left on the lever.
 
-That's the payload. Not malware — **honesty as a weapon.** Every rug in the Perp Future depends on a
-hidden hand; this one amputates its own on a clock you can watch tick. Scammers can copy the art. They
-cannot copy the amputation, because their whole business *is* the hidden hand.
+That's the payload. Not malware — **honesty as a weapon.** The rugs of the Perp Future depend on a
+hidden hand; this one amputates its own on a clock you can watch tick. Scammers can copy the art and
+source. They cannot add the hidden hand back without changing the on-chain receipt.
 
 *The scare factor isn't "we can reach your fridge." It's "we can do the one thing you never will —
 let go."*
@@ -176,14 +176,15 @@ up the sleeve. You don't cover your face to join. You verify the contract and pi
 **Principles.**
 - Menace is aimed at an **archetype** ("the rug," "the hidden hand," "scammers") — never at a named
   person or a specific real wallet. No @-ing victims. No "we have your data."
-- Every threat cashes out to a **verifiable fact** about the token (self‑renouncing, no mint, no
+- Every threat cashes out to a **verifiable fact** about the token (self‑disarming, no mint, no
   blacklist, no tax). The dread is real *because the receipt is real.*
 - Cold, absolute, declarative. Few words. No emojis in‑voice. No engagement‑baiting.
 - **Never** claim a real capability you don't have (surveillance, framing, intrusion). Myth is labeled
   by tone as myth; facts are checkable on BscScan.
 
 **Bio (pick one):**
-- *"The MAC is the machine's face. The Knife removes it. A self‑renouncing token on BNB Chain. Verify, don't trust."*
+- *"You hide behind the chain; we read it. The chain never forgets. Neither do we. Watch your ledger. $KNIFE / BNB."* — ← live bio on @0x6D6163746865
+- *"The MAC is the machine's face. The Knife removes it. A self‑disarming token on BNB Chain. Verify, don't trust."*
 - *"We wear no master. No mint. No blacklist. A 72‑hour blade that cuts its own hand off. $KNIFE / BNB."*
 
 **Sample posts (the whole range, all liability‑free):**
@@ -191,7 +192,7 @@ up the sleeve. You don't cover your face to join. You verify the contract and pi
 - `Every rug needs a hidden hand. This contract amputates its own in 72 hours. Watch the timer, not our word for it. [BscScan link]`
 - `We are the Legion that stayed transparent. No mint. No blacklist. No trapdoor. Expect the Cut.`
 - `The chain never forgets. Neither do we. Trade like the ledger is watching — it is.`
-- `You can copy the art. You cannot copy the amputation. That's the whole threat.`
+- `You can copy the art and source. You cannot change the receipt. That's the whole threat.`
 
 **Optional, and actually clean:** if you ever want a real anti‑scam edge, *informational* transparency
 — re‑sharing already‑public scam‑address labels the way legit on‑chain sleuths do — is the above‑board

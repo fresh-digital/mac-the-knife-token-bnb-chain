@@ -5,11 +5,13 @@ coverage/
 coverage.json
 typechain/
 typechain-types/
+.codegraph/
 
 # Secrets — never commit
 .env
 .env.local
 *.key
+launch-records/pending-mainnet.json
 
 # Machine-local Claude Code settings (per-machine permissions)
 .claude/settings.local.json

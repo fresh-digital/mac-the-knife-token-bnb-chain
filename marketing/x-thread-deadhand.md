@@ -11,7 +11,7 @@ tweet is ≤280 chars.
 ---
 
 **1/** — *(attach key art)*
-Every rug in crypto needs one thing: a hidden hand.
+Many token rugs need one thing: a hidden hand.
 
 A secret mint. A blacklist. A tax dial.
 
@@ -47,7 +47,7 @@ Then a 72-hour control window opens. In it, the deployer can do exactly three ho
 That's the whole list. Everything else already reverts.
 
 **5/**
-When the window closes, every owner power dies. Permanently.
+When the window closes, every KNIFE-specific owner power dies. Permanently.
 
 No mint. No blacklist. No tax dial. No pause.
 
@@ -65,22 +65,20 @@ Most contracts trust the deployer to let go.
 This one makes letting go inevitable.
 
 **7/**
-Don't trust that. Verify it. On BscScan you'll read:
+Don't trust that. Verify the source and ABI on Sourcify:
 
 ✓ no mint function
 ✓ no blacklist / freeze
 ✓ 0% tax
 ✓ one-way trading
-✓ owner powers expire on a timer
+✓ KNIFE-specific launch powers expire on a timer
 
 Call status() — the whole safety picture in one read.
 
 **8/**
-You can copy the art. You can copy the name.
+You can copy the art. You can copy the name and source.
 
-You cannot copy the amputation — because a scam's entire business IS the hidden hand.
-
-A token that provably lets go is the one thing a predator can't ship.
+You cannot add the hidden hand back without changing the bytecode and breaking these guarantees.
 
 That's the whole threat.
 
@@ -94,7 +92,7 @@ The MAC is the machine's face. The Knife removes it.
 Expect the Cut.
 
 **10/**
-$KNIFE — a self-renouncing, open-book token on BNB Chain.
+$KNIFE — a self-disarming, open-book token on BNB Chain.
 
 Watch the timer, not our word for it.
 

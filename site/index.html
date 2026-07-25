@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mac the Knife (KNIFE) — an open-book, fixed-supply BEP-20 on BNB Chain.">
+<title>Mac the Knife (KNIFE) — Open Book on BNB Chain</title>
 <style>
   :root{
     --void:#0B0E11; --panel:#14171C; --panel-2:#1B1F27; --line:#262B34;
@@ -101,6 +108,8 @@
 
   @media (max-width:520px){.btn{flex:1 1 100%;justify-content:center;}}
 </style>
+</head>
+<body>
 
 <main class="knife">
   <div class="col">
@@ -135,40 +144,40 @@
 
       <div class="clockline">
         <span class="lab">Control expires in — The Deadhand Cut</span>
-        <span class="clock" id="deadhand" aria-hidden="true">71:59:12</span>
+        <span class="clock" id="deadhand" aria-live="polite">NOT DEPLOYED</span>
       </div>
 
       <nav class="ctas">
-        <a class="btn primary" href="https://claude.ai/code/artifact/0da6a2a8-26e3-48a1-87a9-f49c4770ea27" target="_blank" rel="noopener">Read the Litepaper</a>
-        <span class="btn soon">Buy $KNIFE <span class="tag">at launch</span></span>
-        <span class="btn soon">Verify on BscScan <span class="tag">at launch</span></span>
+        <a class="btn primary" href="./litepaper.html">Read the Litepaper</a>
+        <a class="btn soon" id="buy-link" aria-disabled="true">Buy $KNIFE <span class="tag">at launch</span></a>
+        <a class="btn soon" id="verify-link" aria-disabled="true">Verify source <span class="tag">at launch</span></a>
       </nav>
     </header>
 
     <section>
       <p class="eyebrow">What is $KNIFE</p>
-      <h2>The token scammers can't copy</h2>
-      <p class="lede">A meme with a spine. $KNIFE is a fair-launch token on BNB Chain built on one idea: <b style="color:var(--bone);font-weight:600">honesty as a weapon.</b> Every rug depends on a hidden hand — a secret mint, a blacklist, a tax dial. This contract amputates its own hand on a public 72-hour timer, then runs ownerless forever. You don't trust that. You verify it.</p>
+      <h2>A token whose levers are public</h2>
+      <p class="lede">A meme with a spine. $KNIFE is a fair-launch token on BNB Chain built on one idea: <b style="color:var(--bone);font-weight:600">honesty as a weapon.</b> Many token rugs depend on a hidden hand — a secret mint, a blacklist, a tax dial. This contract disables every KNIFE-specific owner power on a public 72-hour timer, whether or not the deployer is present. You don't trust that. You verify it.</p>
     </section>
 
     <section>
-      <p class="eyebrow">Why it can't rug you</p>
-      <h2>No hidden hand</h2>
+      <p class="eyebrow">The usual token levers are absent</p>
+      <h2>No hidden admin hand</h2>
       <div class="cards">
         <div class="card"><h3>Fixed supply</h3><p>Minted once at deploy. No mint function exists — supply can never grow.</p></div>
         <div class="card"><h3>No blacklist · 0% tax</h3><p>No wallet can be frozen. Every transfer delivers 100%. There is no fee path to raise.</p></div>
-        <div class="card"><h3>Self-renouncing</h3><p>Every owner power dies on a 72h timer — automatically, permanently, even if the team vanishes.</p></div>
+        <div class="card"><h3>Self-disarming</h3><p>Every KNIFE-specific owner power dies on a 72h timer — automatically, permanently, even if the team vanishes.</p></div>
       </div>
-      <p class="seeall"><a href="https://claude.ai/code/artifact/0da6a2a8-26e3-48a1-87a9-f49c4770ea27" target="_blank" rel="noopener">See all the receipts in the litepaper →</a></p>
+      <p class="seeall"><a href="./litepaper.html">See all the receipts in the litepaper →</a></p>
     </section>
 
     <section>
       <p class="eyebrow">Trust nothing — check it yourself</p>
       <h2>Verify in three steps</h2>
       <ol class="steps">
-        <li><span class="n">01</span><p class="t"><b>Read <code>status()</code> on BscScan.</b> One call returns the whole safety picture: trading, cap, the countdown deadline, ownership, supply.</p></li>
+        <li><span class="n">01</span><p class="t"><b>Open the verified source and ABI on Sourcify.</b> Read <code>status()</code> through the published ABI or your own RPC tool: one call returns trading, cap, deadline, ownership, and supply.</p></li>
         <li><span class="n">02</span><p class="t"><b>Confirm ownership is gone.</b> <code>owner()</code> should return <code>0x0000…0000</code> once renounced — or watch the control deadline pass on-chain.</p></li>
-        <li><span class="n">03</span><p class="t"><b>Check the liquidity lock.</b> The LP tokens should be locked or burned, with the proof published. No lock, no trust.</p></li>
+        <li><span class="n">03</span><p class="t"><b>Confirm the LP burn.</b> The launch record should show every deployer LP token sent to <code>0x0000…dEaD</code>, leaving the deployer with zero LP.</p></li>
       </ol>
     </section>
 
@@ -185,9 +194,9 @@
       <div class="official">
         <h3>▸ Official links only</h3>
         <ul>
-          <li>Website: mactheknife.xyz — the ONLY official site</li>
+          <li>Website: this page — mirrors are unofficial unless linked here</li>
           <li>X: coming soon &nbsp;·&nbsp; Telegram: coming soon</li>
-          <li>Contract: TBA at launch — verify on BscScan</li>
+          <li id="official-contract">Contract: TBA at launch — no address is live yet</li>
         </ul>
         <p class="warn"><b>We will never DM you first. We will never ask for your seed phrase.</b> Anyone who does is an impostor. Always check the contract address against this page before you buy.</p>
       </div>
@@ -198,19 +207,50 @@
   </div>
 </main>
 
+<script src="./launch-config.js"></script>
 <script>
   (function(){
     var el = document.getElementById('deadhand');
     if(!el){ return; }
-    var total = 71*3600 + 59*60 + 12;
+    var config = window.KNIFE_LAUNCH || {};
+    var address = config.contractAddress;
+    var deadline = Number(config.controlDeadlineUnix || 0);
+    if(!address || !deadline){
+      el.textContent = 'NOT DEPLOYED';
+      return;
+    }
+    var buy = document.getElementById('buy-link');
+    var verify = document.getElementById('verify-link');
+    var official = document.getElementById('official-contract');
+    buy.href = config.swapUrl || ('https://pancakeswap.finance/swap?outputCurrency=' + address);
+    verify.href = config.sourceUrl || ('https://repo.sourcify.dev/56/' + address);
+    [buy, verify].forEach(function(link){
+      link.classList.remove('soon');
+      link.removeAttribute('aria-disabled');
+      link.target = '_blank';
+      link.rel = 'noopener';
+      var tag = link.querySelector('.tag');
+      if(tag){ tag.remove(); }
+    });
+    if(official){
+      official.textContent = 'Contract: ';
+      var contractLink = document.createElement('a');
+      contractLink.href = config.explorerUrl || ('https://bscscan.com/address/' + address);
+      contractLink.target = '_blank';
+      contractLink.rel = 'noopener';
+      contractLink.textContent = address;
+      official.appendChild(contractLink);
+    }
     function p(n){ return (n<10?'0':'')+n; }
     function tick(){
-      if(total <= 0){ el.textContent = 'OWNERLESS'; el.classList.add('done'); return; }
+      var total = deadline - Math.floor(Date.now()/1000);
+      if(total <= 0){ el.textContent = 'CONTROL EXPIRED'; el.classList.add('done'); return; }
       var h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60;
       el.textContent = p(h)+':'+p(m)+':'+p(s);
-      total--;
       setTimeout(tick, 1000);
     }
     tick();
   })();
 </script>
+</body>
+</html>

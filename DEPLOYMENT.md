@@ -17,8 +17,12 @@ Then create your secrets file:
 cp .env.example .env
 ```
 
-Fill in `PRIVATE_KEY` (a **fresh burner wallet**, funded with a little BNB for gas) and
-`BSCSCAN_API_KEY`. Never commit `.env`.
+Fill in `PRIVATE_KEY` with a **fresh launch wallet**. Both 64 hex characters and the
+`0x`-prefixed form are accepted. Never commit `.env`.
+
+`BSCSCAN_API_KEY` is optional. Sourcify verification is enabled by default and needs no
+account or key. If you also want automated Etherscan/BscScan submission, use a unified
+Etherscan key; BSC API access may require a paid Etherscan plan.
 
 ## 1. Deploy to BSC Testnet first (chain 97)
 
@@ -32,37 +36,83 @@ The script prints the contract address, the total supply, the control deadline, 
 exact constructor args to use for verification. On testnet the control window is 1 hour so
 you can watch the Deadhand Cut fire quickly.
 
-## 2. Verify the source (so it's genuinely "open book")
+## 2. Verify the testnet source
 
 ```bash
-npx hardhat verify --network bscTestnet <ADDRESS> "<DEPLOYER_ADDRESS>" <CONTROL_WINDOW_SECONDS>
+npm run verify:testnet -- <ADDRESS> "<DEPLOYER_ADDRESS>" 3600
 ```
 
-If `hardhat verify` complains about the API (BscScan moved to the unified Etherscan v2 API
-in 2024–25), either update `@nomicfoundation/hardhat-toolbox` or paste a unified Etherscan
-key into `BSCSCAN_API_KEY`. Verification is what lets anyone read the guarantees for
-themselves — don't skip it.
+With no API key this verifies on Sourcify. With `BSCSCAN_API_KEY` present, Hardhat submits
+to Etherscan v2 and Sourcify. BscScan also provides a web-based **Verify and Publish**
+fallback if API access is unavailable.
 
-## 3. Launch sequence on mainnet (chain 56)
+If the RPC (not the explorer API) is stalling, retry on the backup route — same chain,
+different node operator:
 
-Deploy: `npm run deploy:mainnet` (control window defaults to **72 hours**).
+```bash
+npm run verify:testnet:backup -- <ADDRESS> "<DEPLOYER_ADDRESS>" 3600
+```
 
-Then, **in this order, while the control window is open:**
+Verification is what lets anyone read the guarantees for themselves — don't skip it.
 
-1. **Add liquidity.** Create the KNIFE/BNB (or KNIFE/USDT) pair on PancakeSwap and add the
-   liquidity you intend to. Note the LP **pair address**.
-2. **Exempt the pair + router** so the anti-snipe cap doesn't block the pool itself:
-   `setLimitExempt(pairAddress, true)` and `setLimitExempt(routerAddress, true)`.
-3. *(Optional)* **Set the anti-snipe cap** before opening: `setMaxWalletBeforeLaunch(...)`.
-   Must be done before step 4 — it locks once trading opens.
-4. **Open trading:** `enableTrading()`. This is one-way.
-5. **Lock the LP tokens** (e.g. via a reputable locker) or burn them — and publish the lock.
-   This is the other half of "un-ruggable"; the contract can't do it for you.
-6. *(Optional)* **Remove limits** once the snipe risk has passed: `removeLimits()`.
-7. **Renounce** to cut strings immediately: `renounceOwnership()`.
+## 3. Frozen Open Book mainnet profile (chain 56)
 
-You don't strictly *need* step 7 — even if you skip it, all owner powers die automatically
-at the 72-hour deadline. Renouncing just does it sooner and louder.
+The release candidate has one mainnet trajectory. It is deliberately small and simple:
+
+| Item | Frozen value |
+|---|---|
+| KNIFE in initial LP | 1,000,000,000 — 100% of fixed supply |
+| BNB in initial LP | 10 BNB |
+| Initial pool | PancakeSwap V2 KNIFE/BNB |
+| Max wallet | 10,000,000 KNIFE (1%) |
+| Max-wallet duration | until the 72h control deadline |
+| LP ownership | every deployer LP token sent permanently to `0x…dEaD` |
+| Contract ownership | renounced immediately after configuration |
+| Source verification | Sourcify before liquidity/trading; BscScan may be added afterward |
+
+There is no founder token allocation and no unlocked LP position. The deployer finishes with
+zero KNIFE, zero LP tokens, and a zero `owner()` slot. The 1% cap cannot be removed after
+renunciation, but the contract stops enforcing it automatically at the immutable 72-hour
+deadline.
+
+The human operator runs:
+
+```powershell
+$env:CONFIRM_OPEN_BOOK_LAUNCH="DEPLOY_10_BNB_AND_BURN_LP"
+npm run preflight:mainnet
+npm run launch:mainnet
+```
+
+The safety phrase is intentionally awkward. The script refuses mainnet without it. It checks
+chain 56, wallet balance, current PancakeSwap Router V2 bytecode, the exact pool reserves, LP
+burn receipt, trading state, and renounced ownership. It writes:
+
+- `launch-records/56-<contract>.json` — addresses, amounts, deadline, and every transaction.
+- `site/launch-config.js` — replaces the honest pre-launch placeholders with the real contract,
+  pair, BscScan link, PancakeSwap link, and on-chain deadline.
+
+If the primary RPC is unhealthy **before any launch transaction is broadcast**, rerun both
+commands using `preflight:mainnet:backup` and `launch:mainnet:backup`. They address the same
+chain and wallet.
+
+If the launcher stops after broadcasting anything, **do not rerun it on either RPC**. The
+launcher preserves `launch-records/pending-mainnet.json` and refuses a second deployment.
+Resolve the receipts and current token state without signing anything:
+
+```powershell
+npm run inspect:launch:mainnet
+# or, if the primary RPC is unavailable:
+npm run inspect:launch:mainnet:backup
+```
+
+The inspection output is the evidence for a narrow recovery decision. Never delete the pending
+journal just to make the launch command run again.
+
+### No separate contract-only mainnet deploy
+
+`scripts/deploy.js` refuses chain 56. This prevents starting the irreversible 72-hour clock
+without completing the matching source verification, pool creation, LP burn, and renunciation
+flow. Do not bypass this guard with an ad-hoc deployment command.
 
 ## The fairness guarantees (what verified holders can check)
 
@@ -74,68 +124,43 @@ at the 72-hour deadline. Renouncing just does it sooner and louder.
 | Trading can't be paused to trap you | `enableTrading()` is one-way |
 | The cap can't be tightened on you | `maxWallet` is settable only before launch |
 | The token can't be locked forever | after `controlDeadline`, all transfers pass unconditionally |
-| Owner powers are time-boxed | every owner function carries `duringControlWindow` |
+| KNIFE launch powers are time-boxed | every KNIFE-specific owner function carries `duringControlWindow` |
+| The 72h figure isn't just marketing | `MAX_CONTROL_WINDOW = 72 hours` — the constructor rejects anything longer, so the ceiling is provable from the verified bytecode |
 
-## Pre-launch BNB budget
+## Required mainnet BNB
 
-Two buckets: small fixed costs, and liquidity (your call).
+The frozen profile consumes **10 BNB as permanent pool liquidity**. The mainnet preflight
+requires another **0.1 BNB transaction buffer**, so the hard minimum is **10.1 BNB**.
 
-**Fixed costs — gas + ops.** BSC gas is cheap (~1 gwei). Testnet is free (faucet BNB).
-
-| Item | Approx (mainnet) |
-|---|---|
-| Deploy contract | ~0.003–0.006 BNB |
-| `setLimitExempt` ×2, `enableTrading`, approve | ~0.005 BNB |
-| Create pair + `addLiquidityETH` | ~0.004 BNB |
-| `removeLimits` / `renounceOwnership` | ~0.002 BNB |
-| BscScan verify | free |
-| **Gas subtotal** | **~0.02 BNB — hold 0.05 as buffer** |
-
-**LP lock fee** (reputable locker: PinkLock / UNCX / Team Finance): roughly
-**0.1–0.5 BNB** or a flat ~$30–75 equivalent. Do it — an unlocked LP is the first
-thing buyers check.
-
-**Liquidity — the real number, and it's a decision, not a fixed fee.** The BNB you pair
-with KNIFE *is* the launch pool: it sets the opening price and how easily the price moves.
-
-| Liquidity depth | Character |
-|---|---|
-| ~1–5 BNB | thin — cheap but volatile and easy to manipulate; reads low-effort |
-| ~10–25 BNB | credible small launch, steadier book |
-| ~50–100+ BNB | serious launch, resists manipulation |
-
-Pick a depth you are comfortable **locking**, not just spending. This runbook does not
-advise how much to invest — that is your capital/risk decision.
-
-**Bottom line:** the floor to *physically launch* is well under **1 BNB**
-(~0.05 gas + ~0.1–0.5 LP lock). Everything above that is liquidity you choose. Keep a
-little extra BNB aside for contingencies after launch.
+Fund the fresh launch wallet with **10.25 BNB**. That leaves 0.15 BNB above the profile for
+gas variability and a small post-launch contingency. The LP burn has no locker fee, but it is
+irreversible: the 10 BNB pool position cannot later be withdrawn or migrated.
 
 ## Pre-flight checklist (print this)
 
 **Setup**
-- [ ] Fresh burner deployer wallet created; funded with BNB (gas + LP lock + liquidity).
-- [ ] `.env` filled (`PRIVATE_KEY`, `BSCSCAN_API_KEY`); confirmed git-ignored.
-- [ ] `npm test` green. `npm run coverage` reviewed.
-- [ ] `FORK=true npx hardhat run scripts/fork-rehearsal.js` passes (deploy → buy → sell → burn → Deadhand).
+- [ ] Fresh burner deployer wallet created; funded with BNB (permanent pool liquidity + gas).
+- [ ] `.env` filled (`PRIVATE_KEY`); confirmed git-ignored.
+- [ ] `npm run release:check` green.
+- [ ] `npm run rehearse` passes the exact frozen profile against PancakeSwap V2 on a pinned
+      BSC fork. It selects a fork RPC/block automatically. The **sell** leg is the honeypot
+      check; if it ever fails, do not launch.
 
 **Testnet (chain 97)**
 - [ ] `npm run deploy:testnet`; address + constructor args recorded.
 - [ ] Source verified on testnet.bscscan.com.
 - [ ] Manual buy/sell on testnet PancakeSwap from a second wallet works.
 
-**Mainnet (chain 56) — in order, while the control window runs**
-- [ ] `npm run deploy:mainnet`; address recorded here + in README.
-- [ ] Source verified on bscscan.com (green check) **before** any announcement.
-- [ ] Liquidity added; pair address recorded.
-- [ ] `setLimitExempt(pair, true)` and `setLimitExempt(router, true)`.
-- [ ] *(optional)* `setMaxWalletBeforeLaunch(...)` — before opening only.
-- [ ] `enableTrading()`.
-- [ ] LP tokens locked or burned; **lock link published**.
-- [ ] *(optional)* `removeLimits()` once snipe risk passes.
-- [ ] *(optional)* `renounceOwnership()` to cut strings loudly (else auto at deadline).
+**Mainnet (chain 56)**
+- [ ] Fresh wallet funded with 10.25 BNB.
+- [ ] Exact confirmation phrase set.
+- [ ] `npm run preflight:mainnet` passes.
+- [ ] Human runs `npm run launch:mainnet` once.
+- [ ] Generated launch record shows 10 BNB pool, 100% supply, 1% cap, LP burn, and renunciation.
+- [ ] Sourcify source link and BscScan contract page published before any announcement.
 
 **Public hygiene**
+- [ ] GitHub Pages deployment is green and its public URL visibly says `NOT DEPLOYED` before mainnet.
 - [ ] Contract address published only through official channels (scammers front-run announcements).
 - [ ] Honeypot checkers (honeypot.is, GoPlus) run and linked clean.
 - [ ] BscScan token info + logo submitted (`assets/brand/knife-avatar-400.png`).
@@ -148,11 +173,27 @@ little extra BNB aside for contingencies after launch.
 | Mainnet token address | _(fill after deploy)_ |
 | Testnet token address | _(fill)_ |
 | LP pair address | _(fill)_ |
-| LP lock link | _(fill)_ |
+| LP burn transaction | _(generated by launch script)_ |
 | Control deadline (unix) | _(fill)_ |
 
 ## What this repo intentionally does NOT do
 
-No mainnet deploys or fund movements are automated for you — you sign those yourself. And
-the "spoof / untraceable" lore stays lore: there is no de-anonymization, network spoofing,
-or targeting logic in here, by design. hakky's edge is transparency, not trapdoors.
+The mainnet script prepares and submits the frozen transaction sequence only when the human
+operator supplies the launch wallet and exact confirmation phrase. Codex never handles the
+key or runs the mainnet command. The "spoof / untraceable" lore stays lore: there is no
+de-anonymization, network spoofing, or targeting logic here.
+
+## Website publishing
+
+`.github/workflows/pages.yml` publishes the contents of `site/` to GitHub Pages on every
+`main` change. The default public URL requires no domain or hosting account:
+
+`https://fresh-digital.github.io/mac-the-knife-token-bnb-chain/`
+
+The launch script replaces `site/launch-config.js` with the real token, pair, proof links, and
+deadline. Commit and merge that generated file together with the public launch record immediately
+after the human-signed launch; Pages then updates without a separate web-hosting step.
+
+`mactheknife.xyz` currently remains optional. If it is later pointed at GitHub Pages, configure the
+custom domain in repository settings before changing DNS, verify domain ownership, and follow
+GitHub's current custom-domain documentation. Do not advertise the parked domain as live.

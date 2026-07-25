@@ -1,3 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The Mac the Knife (KNIFE) open-book litepaper and on-chain guarantees.">
+<title>KNIFE Litepaper — Open Book Guarantees</title>
 <style>
   :root{
     --void:#0B0E11;
@@ -213,6 +220,8 @@
     .facts .v{text-align:left;}
   }
 </style>
+</head>
+<body>
 
 <main class="knife">
   <div class="col">
@@ -249,15 +258,15 @@
 
       <div class="deadhand">
         <p class="ey">Control expires in — The Deadhand Cut</p>
-        <div class="clock" id="deadhand" aria-hidden="true">71:59:12</div>
-        <p class="cap">At deploy, a public countdown begins. When it ends, <b>every owner power dies — automatically, forever.</b> <span class="muted">(Illustrative — the live timer starts at deployment.)</span></p>
+        <div class="clock" id="deadhand" aria-live="polite">NOT DEPLOYED</div>
+        <p class="cap">At deploy, a public countdown begins. When it ends, <b>every KNIFE-specific owner power dies — automatically, forever.</b> The live on-chain deadline appears here only after mainnet deployment.</p>
       </div>
 
       <div class="chips">
         <span class="chip">No <b>mint</b></span>
         <span class="chip">No <b>blacklist</b></span>
         <span class="chip"><b>0%</b> tax</span>
-        <span class="chip">Self-<b>renouncing</b></span>
+        <span class="chip">Self-<b>disarming</b></span>
       </div>
     </header>
 
@@ -265,9 +274,9 @@
     <section>
       <p class="eyebrow">§01 · The Thesis</p>
       <h2>Honesty as a weapon</h2>
-      <p class="lede">Every rug in crypto depends on a hidden hand — a secret mint, a blacklist, a tax dial the deployer can turn. $KNIFE is a contract that amputates its own hand on a timer you can watch.</p>
-      <p class="pull">You can copy the art. You cannot copy the amputation — <b>because a scam's whole business is the hidden hand.</b></p>
-      <p class="muted">Scammers can clone the name, the vibe, the key art. A token that provably lets go of its own controls is the one thing a predator can never ship. That's the flex, and it's the entire product.</p>
+      <p class="lede">Many token rugs depend on a hidden hand — a secret mint, a blacklist, a tax dial the deployer can turn. $KNIFE is a contract that amputates its KNIFE-specific owner powers on a timer you can watch.</p>
+      <p class="pull">You can copy the art and the source. <b>You cannot quietly restore the hidden hand without changing the bytecode.</b></p>
+      <p class="muted">Scammers can clone the name, the vibe, and the key art. They cannot keep these exact guarantees while adding the trapdoors back. The difference remains independently checkable.</p>
     </section>
 
     <!-- ============ MECHANIC ============ -->
@@ -278,7 +287,7 @@
       <ol class="steps">
         <li><span class="n">01</span><p class="t"><b>Deploy mints the whole supply once.</b> There is no mint function afterward. Supply can never grow.</p></li>
         <li><span class="n">02</span><p class="t"><b>The window opens (72h).</b> The deployer may only open trading once, set an optional anti-snipe cap before launch, and exempt the liquidity pair.</p></li>
-        <li><span class="n">03</span><p class="t"><b>The window closes.</b> Every owner power reverts permanently. No mint, no freeze, no dial — no hand left on any lever.</p></li>
+        <li><span class="n">03</span><p class="t"><b>The window closes.</b> Every KNIFE-specific owner power reverts permanently. No mint, no freeze, no dial — no hand left on any token lever.</p></li>
         <li><span class="n">04</span><p class="t"><b>Liveness is guaranteed.</b> After the deadline all transfers pass by construction. The token cannot be frozen forever, even if the deployer vanishes.</p></li>
       </ol>
     </section>
@@ -287,7 +296,7 @@
     <section>
       <p class="eyebrow">§03 · The Receipts</p>
       <h2>Verify, don't trust</h2>
-      <p class="muted">Once the source is verified on BscScan, every guarantee below is checkable by anyone. Call <span style="font-family:var(--mono);color:var(--gold-hi)">status()</span> and the contract returns its whole safety picture in a single read.</p>
+      <p class="muted">Once the source and ABI are verified on Sourcify, every guarantee below is checkable by anyone. Call <span style="font-family:var(--mono);color:var(--gold-hi)">status()</span> through the published ABI or your own RPC tool and the contract returns its whole safety picture in a single read.</p>
       <div class="receipts">
         <div class="rc">
           <span class="g">Fixed supply</span>
@@ -335,7 +344,7 @@
         <div class="row"><span class="k">Owner powers</span><span class="v">expire ≤ 72h after deploy</span></div>
         <div class="row"><span class="k">In-contract team reserve</span><span class="v hot">None</span></div>
       </div>
-      <p class="fine" style="margin-top:14px">100% of supply is minted to the deployer to seed liquidity; any allocation split is published pre-launch and visible on-chain. There is no private-sale mechanic in the contract — by design.</p>
+      <p class="fine" style="margin-top:14px">The frozen Open Book launch puts all 1,000,000,000 KNIFE plus 10 BNB into one PancakeSwap V2 pool, burns every deployer LP token, and renounces ownership. There is no team allocation or private-sale mechanic.</p>
     </section>
 
     <!-- ============ CREED ============ -->
@@ -351,7 +360,7 @@
     <!-- ============ FOOTER ============ -->
     <footer>
       <p class="verify">▸ Verify, don't trust</p>
-      <p class="fine"><b>Contract:</b> TBA — published and verified on BscScan at launch. Read <span style="font-family:var(--mono)">status()</span> yourself before touching it.</p>
+      <p class="fine" id="litepaper-contract"><b>Contract:</b> TBA — no address is live yet. Read <span style="font-family:var(--mono)">status()</span> yourself before touching it.</p>
       <p class="fine" style="margin-top:14px"><b>Honest risk.</b> $KNIFE is a meme/culture token — not an investment, a security, or a promise. No revenue, no yield, no entitlement. Its "utility" is the myth and the verifiable fairness of its contract, nothing more. Crypto is volatile and can go to zero; smart contracts can carry bugs even when transparent — get an independent audit before trusting real value to any contract. Do your own research. Nothing here is financial advice, and no price or return is promised or implied.</p>
       <p class="fine" style="margin-top:14px">The MAC the Knife universe is a work of fiction. The lore is labeled as such; the contract claims are the ones to verify on-chain. This page targets no person and describes no real-world capability.</p>
     </footer>
@@ -359,19 +368,38 @@
   </div>
 </main>
 
+<script src="./launch-config.js"></script>
 <script>
   (function(){
     var el = document.getElementById('deadhand');
     if(!el){ return; }
-    var total = 71*3600 + 59*60 + 12; // seconds — illustrative
+    var config = window.KNIFE_LAUNCH || {};
+    var address = config.contractAddress;
+    var deadline = Number(config.controlDeadlineUnix || 0);
+    var explorerUrl = config.explorerUrl || ('https://bscscan.com/address/' + address);
+    var sourceUrl = config.sourceUrl || ('https://repo.sourcify.dev/56/' + address);
+    var contractLine = document.getElementById('litepaper-contract');
+    if(!address || !deadline){
+      el.textContent = 'NOT DEPLOYED';
+      return;
+    }
+    if(contractLine){
+      contractLine.innerHTML = '<b>Contract:</b> <a href="' +
+        explorerUrl + '" target="_blank" rel="noopener">' + address +
+        '</a>. <a href="' + sourceUrl +
+        '" target="_blank" rel="noopener">Verify the source and ABI on Sourcify</a>, then read ' +
+        '<span style="font-family:var(--mono)">status()</span> yourself before touching it.';
+    }
     function p(n){ return (n<10?'0':'')+n; }
     function tick(){
-      if(total <= 0){ el.textContent = 'OWNERLESS'; el.classList.add('done'); return; }
+      var total = deadline - Math.floor(Date.now()/1000);
+      if(total <= 0){ el.textContent = 'CONTROL EXPIRED'; el.classList.add('done'); return; }
       var h = Math.floor(total/3600), m = Math.floor((total%3600)/60), s = total%60;
       el.textContent = p(h)+':'+p(m)+':'+p(s);
-      total--;
       setTimeout(tick, 1000);
     }
     tick();
   })();
 </script>
+</body>
+</html>

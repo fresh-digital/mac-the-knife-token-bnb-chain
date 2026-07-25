@@ -23,8 +23,8 @@ whether we renounce or not. No mint. No freeze. No tax. No door.
 We are the Legion that stopped hiding.
 Anonymous covered its face. We show you both hands — empty — on a timer.
 
-You can copy the art. You cannot copy the amputation,
-because your whole business is the hand you keep.
+You can copy the art. You can copy the source.
+You cannot add the hidden hand back without changing the receipt.
 
 We do not forgive the rug.
 We do not forget the wallet.
@@ -61,16 +61,18 @@ you watch it tick down on-chain. Trust nothing. Verify everything.
 **3/**
 ```
 No mint. No blacklist. No tax. No pause.
-After the timer: no owner, and by construction it can never be frozen.
+The launch renounces ownership; the timer independently kills every KNIFE power.
+By construction it can never be frozen.
 
-The anti-scam token scammers can't copy —
-because copying it means giving up the trapdoor.
+Anyone can copy the token.
+They cannot keep these guarantees and quietly restore the trapdoor.
 ```
 
 ## Guardrails (why this is safe to post)
 
 - Aims at "the rug / the hidden hand," never a real person or wallet.
-- Every threat resolves to a checkable fact: no mint, no blacklist, 0 tax,
-  auto-renounce. The dread is real because the receipt is real.
+- Every claim resolves to a checkable fact: no mint, no blacklist, 0 tax,
+  immediate renunciation plus automatic power expiry. The dread is real because
+  the receipt is real.
 - No claim of surveillance, framing, or intrusion. Myth is myth; facts are
   on BscScan. See `lore/CODEX.md` Canon Guardrails.
