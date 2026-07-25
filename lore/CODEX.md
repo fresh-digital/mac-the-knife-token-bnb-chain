@@ -208,3 +208,5 @@ This codex is fiction and brand voice. Deliberately **not** in it, and not going
 network or devices, real surveillance/de‑anonymization, or targeted threats at real people or wallets.
 Hakky's edge in‑universe and $KNIFE's edge in reality are the same thing: **an open hand where everyone
 else hides a trapdoor.** That's the myth, and it happens to be true.
+
+> **The book stays open. The market decides KNIFE's fate. Long live KNIFE.**
