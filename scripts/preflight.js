@@ -124,7 +124,9 @@ async function main() {
   );
 
   if (process.env.BSCSCAN_API_KEY) {
-    console.log("[ok] Optional Etherscan API key is present; verify submits there too.");
+    console.log(
+      "[ok] Optional Etherscan API key is present for the post-launch verify:mainnet command."
+    );
   } else {
     console.log("[ok] No explorer API key required; launch verifies on Sourcify.");
   }
