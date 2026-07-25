@@ -24,9 +24,14 @@ Fill in `PRIVATE_KEY` with a **fresh launch wallet**. Both 64 hex characters and
 account or key. If you also want automated Etherscan/BscScan submission, use a unified
 Etherscan key; BSC API access may require a paid Etherscan plan.
 
-## 1. Deploy to BSC Testnet first (chain 97)
+## 1. Optional BSC Testnet signer/verification drill (chain 97)
 
-Get free test BNB from a BSC testnet faucet, then:
+The required full launch simulation is `npm run rehearse`, because it executes the exact frozen
+profile against PancakeSwap V2 state on a pinned BSC mainnet fork. A testnet contract-only deploy
+does not recreate that liquidity path.
+
+If you want an additional live-wallet and source-verification drill, get free test BNB from a BSC
+testnet faucet, then:
 
 ```bash
 npm run deploy:testnet
@@ -146,10 +151,9 @@ irreversible: the 10 BNB pool position cannot later be withdrawn or migrated.
       BSC fork. It selects a fork RPC/block automatically. The **sell** leg is the honeypot
       check; if it ever fails, do not launch.
 
-**Testnet (chain 97)**
+**Optional testnet signer drill (chain 97)**
 - [ ] `npm run deploy:testnet`; address + constructor args recorded.
 - [ ] Source verified on testnet.bscscan.com.
-- [ ] Manual buy/sell on testnet PancakeSwap from a second wallet works.
 
 **Mainnet (chain 56)**
 - [ ] Fresh wallet funded with 10.25 BNB.
