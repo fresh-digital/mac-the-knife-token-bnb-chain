@@ -14,7 +14,7 @@ testing-framework]]`).
 **Voice guardrails (non-negotiable):**
 - Menace aims at the **archetype** — "the rug," "the hidden hand," "scammers" — **never** a named
   person or specific real wallet. No @-ing targets. No claims of surveillance, framing, or intrusion.
-- Every threat cashes out to a **checkable fact** (self-renouncing, no mint, no blacklist, 0 tax).
+- Every threat cashes out to a **checkable fact** (self-disarming, no mint, no blacklist, 0 tax).
 - Any financial-sounding post carries a plain **not-financial-advice / DYOR** line. Never promise price
   or returns.
 - Cold, declarative, few words. The account is a myth, not a person to argue with.
@@ -53,8 +53,8 @@ trust." This is where a skeptic becomes a believer.
 ### Phase 3 — THE CUT (Days 22–24): launch
 Deploy, liquidity, open trading, LP lock, the real countdown begins. Maximum signal density.
 
-### Phase 4 — OWNERLESS (Days 25–30): prove it
-Watch the timer die on-chain. Renounce. Lock proof. Hand the myth to the Collective.
+### Phase 4 — CONTROL EXPIRED (Days 25–30): prove it
+Ownership was renounced at launch; now watch the independent control timer expire on-chain.
 
 ---
 
@@ -82,13 +82,13 @@ Watch the timer die on-chain. Renounce. Lock proof. Hand the myth to the Collect
 | 18 | Proof | PROOF | Guarantee card: 0% tax. | Card |
 | 19 | Proof | PROOF | Testnet is live — screenshot of `status()`; "verify, don't trust." | Screenshot |
 | 20 | Proof | SIGNAL | Launch date + exact sequence (LP → open → lock → renounce). | Card |
-| 21 | Proof | DOCTRINE | "You can copy the art. You cannot copy the amputation." | Image |
+| 21 | Proof | DOCTRINE | "You can copy the art and source. You cannot change the receipt." | Image |
 | 22 | The Cut | SIGNAL | **LAUNCH.** Contract address + BscScan verified link + pair link. | Pinned |
 | 23 | The Cut | SIGNAL | LP locked — post the lock proof. Countdown now live: `71:xx:xx`. | Screenshot |
 | 24 | The Cut | PROOF | "Read it yourself" — how to call `status()`, walkthrough. | Thread |
 | 25 | Ownerless | SIGNAL | Timer check-in — "the hand is dying on schedule." | Motion |
 | 26 | Ownerless | COLLECTIVE | Repost best community art / memes (UGC). | Repost |
-| 27 | Ownerless | SIGNAL | **Renounce / deadline hit:** ownership → `0x000…`, on-chain proof. `OWNERLESS`. | Pinned |
+| 27 | Ownerless | SIGNAL | **Deadline hit:** `controlWindowOpen()` → `false`; ownership has been `0x000…` since launch. | Pinned |
 | 28 | Ownerless | DOCTRINE | "No master. No trapdoor. As promised — verify." | Image |
 | 29 | Ownerless | MYTH | Next Codex drop teased (a new legend). | Card |
 | 30 | Ownerless | COLLECTIVE | Thank the Collective; state what's next. Re-pin the creed. | Thread |
@@ -102,7 +102,7 @@ Watch the timer die on-chain. Renounce. Lock proof. Hand the myth to the Collect
 - `Watch the timer, not our word for it. → [BscScan]`
 - `We are the Legion that stayed transparent. No mint. No blacklist. No master.`
 - `The chain never forgets. Trade like it's watching — it is.`
-- `You can copy the art. You cannot copy the amputation. That's the whole threat.`
+- `You can copy the art and source. You cannot add the hidden hand back without changing the receipt.`
 - Standard tail for financial-sounding posts: `Meme/culture token. Not financial advice. DYOR.`
 
 ---

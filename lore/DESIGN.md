@@ -88,7 +88,7 @@ The **open empty hand** is the sixth, quieter glyph — use it wherever "trust /
 ## 6. Motion (for video / X clips)
 
 - **The Cut transition:** gold blade swipes screen → frame shatters into hex particles → next scene.
-- **The Countdown ident:** `72:00:00` ticking in mono; on `00:00:00` the word **OWNERLESS** stamps.
+- **The Countdown ident:** `72:00:00` ticking in mono; on `00:00:00` **CONTROL EXPIRED** stamps.
 - **The Moritat glitch:** UI/devices flicker; eight notes of the ballad implied by a waveform that
   briefly forms a knife shape. (Pure vibe — no real audio capability implied.)
 - Keep cuts hard and short. Silence and black are tools. Restraint reads as confidence.
