@@ -65,6 +65,25 @@
   .btn.soon{color:var(--ash-dim);cursor:default;}
   .btn.soon .tag{font-size:0.62rem;color:var(--ash-dim);border:1px solid var(--line);padding:2px 6px;}
 
+  /* zero creator allocation */
+  .creator-zero{
+    margin:32px auto 0;padding:20px clamp(18px,4vw,30px);max-width:680px;
+    border:2px solid var(--gold);background:linear-gradient(135deg,rgba(240,185,11,0.12),rgba(240,185,11,0.025));
+    box-shadow:0 0 30px rgba(240,185,11,0.10);
+  }
+  .creator-zero .label{
+    display:block;font-family:var(--mono);font-size:0.72rem;font-weight:700;
+    letter-spacing:0.28em;text-transform:uppercase;color:var(--bone);
+  }
+  .creator-zero strong{
+    display:block;margin:4px 0 8px;font-family:var(--display);font-size:clamp(2.8rem,10vw,5rem);
+    line-height:0.95;letter-spacing:0.03em;text-transform:uppercase;color:var(--gold);
+  }
+  .creator-zero .detail{
+    display:block;font-family:var(--mono);font-size:clamp(0.72rem,2.3vw,0.86rem);
+    line-height:1.55;color:var(--ash);
+  }
+
   /* generic */
   section{margin-top:clamp(46px,8vw,74px);}
   .eyebrow{font-family:var(--mono);font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:12px;margin:0 0 18px;}
@@ -153,6 +172,12 @@
         <a class="btn soon" id="buy-link" aria-disabled="true">Buy $KNIFE <span class="tag">at launch</span></a>
         <a class="btn soon" id="verify-link" aria-disabled="true">Verify source <span class="tag">at launch</span></a>
       </nav>
+
+      <div class="creator-zero" role="note" aria-label="Creator allocation: zero KNIFE">
+        <span class="label">Creator allocation</span>
+        <strong>0 KNIFE</strong>
+        <span class="detail">100% of the fixed supply enters liquidity. The creator retains no KNIFE and no LP tokens.</span>
+      </div>
     </header>
 
     <section>
