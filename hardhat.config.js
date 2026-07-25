@@ -17,7 +17,15 @@ module.exports = {
     },
   },
   networks: {
-    hardhat: {},
+    hardhat: {
+      forking: {
+        url: BSC_RPC_URL || "https://bsc-dataseed.bnbchain.org",
+        enabled: process.env.FORK === "true",
+        // Non-archive public nodes prune old state; set FORK_BLOCK to a near-tip
+        // block to avoid "missing trie node" errors during a fork rehearsal.
+        ...(process.env.FORK_BLOCK ? { blockNumber: parseInt(process.env.FORK_BLOCK, 10) } : {}),
+      },
+    },
     bscTestnet: {
       url: BSC_TESTNET_RPC_URL || "https://bsc-testnet-rpc.publicnode.com",
       chainId: 97,
