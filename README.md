@@ -76,7 +76,8 @@ npm run release:check
 npm run rehearse
 ```
 
-Then follow [DEPLOYMENT.md](DEPLOYMENT.md) — testnet first.
+Then follow [DEPLOYMENT.md](DEPLOYMENT.md). The exact BSC-mainnet fork rehearsal is required;
+the live testnet signer/verification drill is optional.
 
 The pre-launch site publishes from `site/` through GitHub Pages. Until a custom domain is
 deliberately configured, the canonical host is:
